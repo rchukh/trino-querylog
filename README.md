@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/rchukh/presto-querylog.svg?branch=master)](https://travis-ci.org/rchukh/presto-querylog)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Frchukh%2Fpresto-querylog.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Frchukh%2Fpresto-querylog?ref=badge_shield)
 
 # Overview
 
@@ -73,3 +74,6 @@ Prepare configuration file for logging query events, e.g. `<path_to_presto>/etc/
 ```
 
 Most of the configuration can be safely changed, but for easier consumption by FileBeat it is advised to leave at least JsonLayout and its parameters. 
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Frchukh%2Fpresto-querylog.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Frchukh%2Fpresto-querylog?ref=badge_large)
