@@ -6,7 +6,5 @@ jdk:
 addons:
   sonarcloud:
     organization: "rchukh-github"
-    token:
-      secure: 5be6a0b92f43f68cf89fea62e050b67ed42213a4
 script:
   - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
