@@ -18,3 +18,4 @@ buildNumber.properties
 .mvn/timing.properties
 # Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
 !/.mvn/wrapper/maven-wrapper.jar
+/bin1/

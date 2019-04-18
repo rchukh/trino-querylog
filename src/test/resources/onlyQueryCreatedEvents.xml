@@ -4,8 +4,9 @@
         <RollingFile name="JsonRollingFile" append="false">
             <FileName>target/onlyQueryCreatedEvents.log</FileName>
             <FilePattern>target/%d{yyyy-MM-dd-hh}-%i.log</FilePattern>
-            <JsonLayout charset="UTF-8" includeStacktrace="false"
-                        compact="true" eventEol="true" objectMessageAsJsonObject="true"/>
+<!--            <JsonLayout charset="UTF-8" includeStacktrace="false"-->
+<!--                        compact="true" eventEol="true" objectMessageAsJsonObject="true"/>-->
+            <PatternLayout pattern="%d{yyy-MM-dd HH:mm:ss}|%-5level|%msg%n"/>
             <Policies>
                 <SizeBasedTriggeringPolicy size="10 MB"/>
             </Policies>
