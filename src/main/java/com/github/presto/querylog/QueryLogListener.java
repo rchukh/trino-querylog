@@ -7,6 +7,8 @@ import com.facebook.presto.spi.eventlistener.SplitCompletedEvent;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.message.ObjectMessage;
+import java.util.NoSuchElementException;
+
 
 public class QueryLogListener implements EventListener {
     private final Logger logger;
@@ -30,7 +32,7 @@ public class QueryLogListener implements EventListener {
     public void queryCreated(final QueryCreatedEvent queryCreatedEvent) {
         if (trackEventCreated) {
             //logger.warn(new ObjectMessage(queryCreatedEvent));
-            logger.info(queryCreatedEvent.getCreateTime()+"|"+queryCreatedEvent.getMetadata().getQueryId());
+            logger.warn(queryCreatedEvent.getCreateTime()+this.dlm+queryCreatedEvent.getMetadata().getQueryId());
 
         }
     }
@@ -41,31 +43,48 @@ public class QueryLogListener implements EventListener {
             //logger.info(new ObjectMessage(queryCompletedEvent));
             //logger.info(queryCompletedEvent.getCreateTime()+"|"+queryCompletedEvent.getEndTime());
             StringBuilder msg =  new StringBuilder();
+
             try {
-                msg.append(this.dlm);
                 msg.append("succeeded"+this.dlm);
-                msg.append("failureInfo: "+queryCompletedEvent.getFailureInfo().toString()+this.dlm);
+                if(queryCompletedEvent.getFailureInfo().isPresent()) {
+                    msg.append(queryCompletedEvent.getFailureInfo().get().getErrorCode().getName() + this.dlm); //failureInfo: Optional[com.facebook.presto.spi.eventlistener.QueryFailureInfo@643e5358
+                }else {
+                    msg.append("getFailureInfo()"+this.dlm);
+                }
                 msg.append(queryCompletedEvent.getMetadata().getQueryId()+this.dlm);
                 msg.append(queryCompletedEvent.getContext().getUser()+this.dlm);
-                msg.append(queryCompletedEvent.getContext().getSource()+this.dlm);
-                msg.append(queryCompletedEvent.getContext().getRemoteClientAddress().toString()+this.dlm);
-                msg.append(queryCompletedEvent.getContext().getUserAgent().toString()+this.dlm);
-                msg.append(queryCompletedEvent.getMetadata().getQueryState()+this.dlm);
+                if (queryCompletedEvent.getContext().getSource().isPresent()) {
+                    msg.append(queryCompletedEvent.getContext().getSource().get() + this.dlm);
+                }else{
+                    msg.append("getSource()"+this.dlm);
+                }
+                if(queryCompletedEvent.getContext().getRemoteClientAddress().isPresent()){
+                    msg.append(queryCompletedEvent.getContext().getRemoteClientAddress().get() + this.dlm);
+                }else{
+                    msg.append("getRemoteClientAddress()"+this.dlm);
+                }
+                if (queryCompletedEvent.getContext().getUserAgent().isPresent()) {
+                    msg.append(queryCompletedEvent.getContext().getUserAgent().get()+this.dlm);
+                }else {
+                    msg.append("getUserAgent()"+this.dlm);
+                }
+
+                //msg.append(queryCompletedEvent.getMetadata().getQueryState()+this.dlm);
                 msg.append(queryCompletedEvent.getCreateTime()+this.dlm);
                 msg.append(queryCompletedEvent.getEndTime()+this.dlm);
                 //query['queryStats']['totalDrivers']
                 //query['queryStats']['totalDrivers']
                 msg.append(queryCompletedEvent.getStatistics().getCumulativeMemory()+this.dlm); //convert ot GB
                 msg.append(queryCompletedEvent.getStatistics().getPeakUserMemoryBytes()+this.dlm); //convert to GB
-                msg.append(queryCompletedEvent.getStatistics().getCpuTime()+this.dlm); //normalize time
+                msg.append(queryCompletedEvent.getStatistics().getCpuTime().toString().substring(2)+this.dlm); //normalize time
                 msg.append(queryCompletedEvent.getExecutionStartTime()+this.dlm); //convert to seconds
-                msg.append(queryCompletedEvent.getStatistics().getQueuedTime()+this.dlm); //normalize_time
+                msg.append(queryCompletedEvent.getStatistics().getQueuedTime().toString().substring(2)+this.dlm); //normalize_time
                 // query_details['queryStats']['totalTasks']
                 // query_details['queryStats']['completedTasks']
                 msg.append(queryCompletedEvent.getStatistics().getPeakTotalNonRevocableMemoryBytes()+this.dlm);//normalize_bytes(query_details['queryStats']['peakTotalMemoryReservation'])
-                msg.append(queryCompletedEvent.getStatistics().getPeakUserMemoryBytes()); // normalize_bytes
+                msg.append(queryCompletedEvent.getStatistics().getPeakUserMemoryBytes()+this.dlm); // normalize_bytes
                 // normalize_time(query_details['queryStats']['totalScheduledTime']),
-                msg.append(queryCompletedEvent.getStatistics().getWallTime()+this.dlm); //normalize_time(query_details['queryStats']['totalUserTime'])
+                msg.append("absolute wall time: "+queryCompletedEvent.getStatistics().getWallTime().toString().substring(2)+this.dlm); //normalize_time(query_details['queryStats']['totalUserTime'])
                 //normalize_time(query_details['queryStats']['totalBlockedTime']),
                 //normalize_bytes(query_details['queryStats']['rawInputDataSize']),
                 //query_details['queryStats']['rawInputPositions'],
@@ -75,7 +94,7 @@ public class QueryLogListener implements EventListener {
                 //query_details['queryStats']['outputPositions'],
                 msg.append(queryCompletedEvent.getStatistics().getOutputRows()+this.dlm);
                 msg.append(queryCompletedEvent.getMetadata().getQuery().replace("\n"," ")+this.dlm);
-                msg.append(queryCompletedEvent.getMetadata().getQueryState());
+                msg.append(queryCompletedEvent.getMetadata().getQueryState()); //FAILED, FINISHED
                 logger.info(msg.toString());
 
             } catch (Exception ex) {
@@ -92,3 +111,4 @@ public class QueryLogListener implements EventListener {
         }
     }
 }
+/// kill server java -cp /dev/shm/var/presto-server-0.198/lib/* -server -Xmx45G -XX:+UseG1GC -XX
