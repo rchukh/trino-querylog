@@ -6,8 +6,6 @@ import com.facebook.presto.spi.eventlistener.QueryCreatedEvent;
 import com.facebook.presto.spi.eventlistener.SplitCompletedEvent;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.message.ObjectMessage;
-import java.util.NoSuchElementException;
 
 
 public class QueryLogListener implements EventListener {
@@ -16,6 +14,7 @@ public class QueryLogListener implements EventListener {
     private final boolean trackEventCompleted;
     private final boolean trackEventCompletedSplit;
     private final String dlm;
+    public Utilities utilities;
 
     public QueryLogListener(final LoggerContext loggerContext,
                             final boolean trackEventCreated,
@@ -25,14 +24,17 @@ public class QueryLogListener implements EventListener {
         this.trackEventCompleted = trackEventCompleted;
         this.trackEventCompletedSplit = trackEventCompletedSplit;
         this.logger = loggerContext.getLogger(QueryLogListener.class.getName());
+
+        this.utilities = new Utilities();
         this.dlm = "|";//"\035";
+
     }
 
     @Override
     public void queryCreated(final QueryCreatedEvent queryCreatedEvent) {
         if (trackEventCreated) {
             //logger.warn(new ObjectMessage(queryCreatedEvent));
-            logger.warn(queryCreatedEvent.getCreateTime()+this.dlm+queryCreatedEvent.getMetadata().getQueryId());
+            logger.warn(queryCreatedEvent.toString());
 
         }
     }
@@ -43,16 +45,24 @@ public class QueryLogListener implements EventListener {
             //logger.info(new ObjectMessage(queryCompletedEvent));
             //logger.info(queryCompletedEvent.getCreateTime()+"|"+queryCompletedEvent.getEndTime());
             StringBuilder msg =  new StringBuilder();
+            String queryStatus = "succeeded";
+
+            if (queryCompletedEvent.getMetadata().getQueryState() != "FINISHED"){
+                queryStatus = "failed";
+            }
+
 
             try {
-                msg.append("succeeded"+this.dlm);
+                msg.append(queryStatus + this.dlm);
                 if(queryCompletedEvent.getFailureInfo().isPresent()) {
                     msg.append(queryCompletedEvent.getFailureInfo().get().getErrorCode().getName() + this.dlm); //failureInfo: Optional[com.facebook.presto.spi.eventlistener.QueryFailureInfo@643e5358
                 }else {
                     msg.append("getFailureInfo()"+this.dlm);
                 }
+
                 msg.append(queryCompletedEvent.getMetadata().getQueryId()+this.dlm);
                 msg.append(queryCompletedEvent.getContext().getUser()+this.dlm);
+
                 if (queryCompletedEvent.getContext().getSource().isPresent()) {
                     msg.append(queryCompletedEvent.getContext().getSource().get() + this.dlm);
                 }else{
@@ -74,23 +84,23 @@ public class QueryLogListener implements EventListener {
                 msg.append(queryCompletedEvent.getEndTime()+this.dlm);
                 //query['queryStats']['totalDrivers']
                 //query['queryStats']['totalDrivers']
-                msg.append(queryCompletedEvent.getStatistics().getCumulativeMemory()+this.dlm); //convert ot GB
-                msg.append(queryCompletedEvent.getStatistics().getPeakUserMemoryBytes()+this.dlm); //convert to GB
-                msg.append(queryCompletedEvent.getStatistics().getCpuTime().toString().substring(2)+this.dlm); //normalize time
-                msg.append(queryCompletedEvent.getExecutionStartTime()+this.dlm); //convert to seconds
-                msg.append(queryCompletedEvent.getStatistics().getQueuedTime().toString().substring(2)+this.dlm); //normalize_time
+                msg.append(this.utilities.normalizeMemory(queryCompletedEvent.getStatistics().getCumulativeMemory()+"B")+this.dlm); //convert ot GB
+                msg.append(this.utilities.normalizeMemory(queryCompletedEvent.getStatistics().getPeakUserMemoryBytes()+"B")+this.dlm); //convert to GB
+                msg.append(this.utilities.normalizeTime(queryCompletedEvent.getStatistics().getCpuTime().toString())+this.dlm); //normalize time
+                msg.append(queryCompletedEvent.getExecutionStartTime()+this.dlm); //execution start time
+                msg.append(this.utilities.normalizeTime(queryCompletedEvent.getStatistics().getQueuedTime().toString())+this.dlm); //normalize_time
                 // query_details['queryStats']['totalTasks']
                 // query_details['queryStats']['completedTasks']
-                msg.append(queryCompletedEvent.getStatistics().getPeakTotalNonRevocableMemoryBytes()+this.dlm);//normalize_bytes(query_details['queryStats']['peakTotalMemoryReservation'])
-                msg.append(queryCompletedEvent.getStatistics().getPeakUserMemoryBytes()+this.dlm); // normalize_bytes
+                msg.append(this.utilities.normalizeMemory(queryCompletedEvent.getStatistics().getPeakTotalNonRevocableMemoryBytes()+"B")+this.dlm);//normalize_bytes(query_details['queryStats']['peakTotalMemoryReservation'])
+                msg.append(this.utilities.normalizeMemory(queryCompletedEvent.getStatistics().getPeakUserMemoryBytes()+"B")+this.dlm); // normalize_bytes
                 // normalize_time(query_details['queryStats']['totalScheduledTime']),
-                msg.append("absolute wall time: "+queryCompletedEvent.getStatistics().getWallTime().toString().substring(2)+this.dlm); //normalize_time(query_details['queryStats']['totalUserTime'])
+                msg.append("absolute wall time: "+this.utilities.normalizeMemory(queryCompletedEvent.getStatistics().getWallTime().toString())+this.dlm); //normalize_time(query_details['queryStats']['totalUserTime'])
                 //normalize_time(query_details['queryStats']['totalBlockedTime']),
                 //normalize_bytes(query_details['queryStats']['rawInputDataSize']),
                 //query_details['queryStats']['rawInputPositions'],
                 //normalize_bytes(query_details['queryStats']['processedInputDataSize']),
                 //query_details['queryStats']['processedInputPositions'],
-                msg.append(queryCompletedEvent.getStatistics().getOutputBytes()+this.dlm); //new parameter need to normalize
+                msg.append(this.utilities.normalizeMemory(queryCompletedEvent.getStatistics().getOutputBytes()+"B")+this.dlm); //new parameter need to normalize
                 //query_details['queryStats']['outputPositions'],
                 msg.append(queryCompletedEvent.getStatistics().getOutputRows()+this.dlm);
                 msg.append(queryCompletedEvent.getMetadata().getQuery().replace("\n"," ")+this.dlm);
@@ -107,7 +117,7 @@ public class QueryLogListener implements EventListener {
     @Override
     public void splitCompleted(final SplitCompletedEvent splitCompletedEvent) {
         if (trackEventCompletedSplit) {
-            logger.warn(new ObjectMessage(splitCompletedEvent));
+            logger.warn(splitCompletedEvent.toString());
         }
     }
 }
