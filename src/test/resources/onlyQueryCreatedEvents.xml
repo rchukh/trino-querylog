@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="PrestoQueryLog" packages="">
+<Configuration status="INFO" name="PrestoQueryLog" packages="">
     <Appenders>
         <RollingFile name="JsonRollingFile" append="false">
             <FileName>target/onlyQueryCreatedEvents.log</FileName>
             <FilePattern>target/%d{yyyy-MM-dd-hh}-%i.log</FilePattern>
 <!--            <JsonLayout charset="UTF-8" includeStacktrace="false"-->
 <!--                        compact="true" eventEol="true" objectMessageAsJsonObject="true"/>-->
-            <PatternLayout pattern="%d{yyy-MM-dd HH:mm:ss}|%-5level|%msg%n"/>
+            <PatternLayout pattern="%d{yyy-MM-dd HH:mm:ss}|%level|%msg%n"/>
             <Policies>
                 <SizeBasedTriggeringPolicy size="10 MB"/>
             </Policies>
@@ -15,7 +15,7 @@
     </Appenders>
 
     <Loggers>
-        <Root level="INFO">
+        <Root level="DEBUG">
             <AppenderRef ref="JsonRollingFile"/>
         </Root>
     </Loggers>
