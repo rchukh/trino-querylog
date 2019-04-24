@@ -25,16 +25,21 @@ public class QueryLogListener implements EventListener {
         this.trackEventCompletedSplit = trackEventCompletedSplit;
         this.logger = loggerContext.getLogger(QueryLogListener.class.getName());
 
-        this.utilities = new Utilities();
+        this.utilities = new Utilities(loggerContext);
         this.dlm = "|";//"\035";
 
+    }
+
+    public double normalizeBytes(double numberOfBytes){
+        logger.warn("Number of Bytes: "+ numberOfBytes);
+        return numberOfBytes/1073741824.0;
     }
 
     @Override
     public void queryCreated(final QueryCreatedEvent queryCreatedEvent) {
         if (trackEventCreated) {
-            //logger.warn(new ObjectMessage(queryCreatedEvent));
-            logger.warn(queryCreatedEvent.toString());
+           // logger.debug(new ObjectMessage(queryCreatedEvent));
+            logger.warn(queryCreatedEvent.getMetadata().getQuery()+dlm+queryCreatedEvent.getCreateTime());
 
         }
     }
@@ -53,57 +58,56 @@ public class QueryLogListener implements EventListener {
 
 
             try {
-                msg.append(queryStatus + this.dlm);
+                msg.append(queryStatus + dlm);
                 if(queryCompletedEvent.getFailureInfo().isPresent()) {
-                    msg.append(queryCompletedEvent.getFailureInfo().get().getErrorCode().getName() + this.dlm); //failureInfo: Optional[com.facebook.presto.spi.eventlistener.QueryFailureInfo@643e5358
+                    msg.append(queryCompletedEvent.getFailureInfo().get().getErrorCode().getName() + dlm); //failureInfo: Optional[com.facebook.presto.spi.eventlistener.QueryFailureInfo@643e5358
                 }else {
-                    msg.append("getFailureInfo()"+this.dlm);
+                    msg.append("getFailureInfo()"+dlm);
                 }
 
-                msg.append(queryCompletedEvent.getMetadata().getQueryId()+this.dlm);
-                msg.append(queryCompletedEvent.getContext().getUser()+this.dlm);
+                msg.append(queryCompletedEvent.getMetadata().getQueryId()+dlm);
+                msg.append(queryCompletedEvent.getContext().getUser()+dlm);
 
                 if (queryCompletedEvent.getContext().getSource().isPresent()) {
-                    msg.append(queryCompletedEvent.getContext().getSource().get() + this.dlm);
+                    msg.append(queryCompletedEvent.getContext().getSource().get() + dlm);
                 }else{
-                    msg.append("getSource()"+this.dlm);
+                    msg.append("getSource()"+dlm);
                 }
                 if(queryCompletedEvent.getContext().getRemoteClientAddress().isPresent()){
-                    msg.append(queryCompletedEvent.getContext().getRemoteClientAddress().get() + this.dlm);
+                    msg.append(queryCompletedEvent.getContext().getRemoteClientAddress().get() + dlm);
                 }else{
-                    msg.append("getRemoteClientAddress()"+this.dlm);
+                    msg.append("getRemoteClientAddress()"+dlm);
                 }
                 if (queryCompletedEvent.getContext().getUserAgent().isPresent()) {
-                    msg.append(queryCompletedEvent.getContext().getUserAgent().get()+this.dlm);
+                    msg.append(queryCompletedEvent.getContext().getUserAgent().get()+dlm);
                 }else {
-                    msg.append("getUserAgent()"+this.dlm);
+                    msg.append("getUserAgent()"+dlm);
                 }
+                msg.append(queryCompletedEvent.getCreateTime()+dlm);
+                msg.append(queryCompletedEvent.getEndTime()+dlm);
 
-                //msg.append(queryCompletedEvent.getMetadata().getQueryState()+this.dlm);
-                msg.append(queryCompletedEvent.getCreateTime()+this.dlm);
-                msg.append(queryCompletedEvent.getEndTime()+this.dlm);
                 //query['queryStats']['totalDrivers']
                 //query['queryStats']['totalDrivers']
-                msg.append(this.utilities.normalizeMemory(queryCompletedEvent.getStatistics().getCumulativeMemory()+"B")+this.dlm); //convert ot GB
-                msg.append(this.utilities.normalizeMemory(queryCompletedEvent.getStatistics().getPeakUserMemoryBytes()+"B")+this.dlm); //convert to GB
-                msg.append(this.utilities.normalizeTime(queryCompletedEvent.getStatistics().getCpuTime().toString())+this.dlm); //normalize time
-                msg.append(queryCompletedEvent.getExecutionStartTime()+this.dlm); //execution start time
-                msg.append(this.utilities.normalizeTime(queryCompletedEvent.getStatistics().getQueuedTime().toString())+this.dlm); //normalize_time
+                msg.append(utilities.normalizeBytes(queryCompletedEvent.getStatistics().getCumulativeMemory())+dlm); //convert ot GB
+                msg.append(utilities.normalizeBytes(queryCompletedEvent.getStatistics().getPeakUserMemoryBytes())+dlm); //convert to GB
+                msg.append(queryCompletedEvent.getStatistics().getCpuTime().getSeconds()+dlm); //normalize time
+                msg.append(queryCompletedEvent.getExecutionStartTime()+dlm); //execution start time
+                msg.append(queryCompletedEvent.getStatistics().getQueuedTime().getSeconds()+dlm); //normalize_time
                 // query_details['queryStats']['totalTasks']
                 // query_details['queryStats']['completedTasks']
-                msg.append(this.utilities.normalizeMemory(queryCompletedEvent.getStatistics().getPeakTotalNonRevocableMemoryBytes()+"B")+this.dlm);//normalize_bytes(query_details['queryStats']['peakTotalMemoryReservation'])
-                msg.append(this.utilities.normalizeMemory(queryCompletedEvent.getStatistics().getPeakUserMemoryBytes()+"B")+this.dlm); // normalize_bytes
+                msg.append(utilities.normalizeBytes(queryCompletedEvent.getStatistics().getPeakTotalNonRevocableMemoryBytes())+dlm);//normalize_bytes(query_details['queryStats']['peakTotalMemoryReservation'])
+                msg.append(utilities.normalizeBytes(queryCompletedEvent.getStatistics().getPeakUserMemoryBytes())+dlm); // normalize_bytes
                 // normalize_time(query_details['queryStats']['totalScheduledTime']),
-                msg.append("absolute wall time: "+this.utilities.normalizeMemory(queryCompletedEvent.getStatistics().getWallTime().toString())+this.dlm); //normalize_time(query_details['queryStats']['totalUserTime'])
+                msg.append("absolute wall time in Seconds: "+queryCompletedEvent.getStatistics().getWallTime().getSeconds()+dlm); //normalize_time(query_details['queryStats']['totalUserTime'])
                 //normalize_time(query_details['queryStats']['totalBlockedTime']),
                 //normalize_bytes(query_details['queryStats']['rawInputDataSize']),
                 //query_details['queryStats']['rawInputPositions'],
                 //normalize_bytes(query_details['queryStats']['processedInputDataSize']),
                 //query_details['queryStats']['processedInputPositions'],
-                msg.append(this.utilities.normalizeMemory(queryCompletedEvent.getStatistics().getOutputBytes()+"B")+this.dlm); //new parameter need to normalize
+                msg.append(utilities.normalizeBytes(queryCompletedEvent.getStatistics().getOutputBytes())+dlm); //new parameter need to normalize
                 //query_details['queryStats']['outputPositions'],
-                msg.append(queryCompletedEvent.getStatistics().getOutputRows()+this.dlm);
-                msg.append(queryCompletedEvent.getMetadata().getQuery().replace("\n"," ")+this.dlm);
+                msg.append(queryCompletedEvent.getStatistics().getOutputRows()+dlm);
+                msg.append(queryCompletedEvent.getMetadata().getQuery().replace("\n"," ")+dlm);
                 msg.append(queryCompletedEvent.getMetadata().getQueryState()); //FAILED, FINISHED
                 logger.info(msg.toString());
 
