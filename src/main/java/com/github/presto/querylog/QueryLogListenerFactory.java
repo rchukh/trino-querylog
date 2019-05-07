@@ -19,7 +19,7 @@ public class QueryLogListenerFactory implements EventListenerFactory {
 
     @Override
     public String getName() {
-        return "presto-querylog";
+        return "querylog";
     }
 
     @Override
