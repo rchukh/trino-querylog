@@ -1,23 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="info" name="PrestoQueryLog" packages="">
     <Appenders>
-        <RollingFile name="JsonRollingFile">
-            <FileName>/mnt0/var/log/presto/presto-querylog.log</FileName>
-            <FilePattern>/mnt0/var/log/presto/%d{yyyy-MM-dd-hh}-%i.log</FilePattern>
-            <!-- <JsonLayout charset="UTF-8" includeStacktrace="false"
-                        compact="true" eventEol="true" objectMessageAsJsonObject="true"/> -->
-<!--            <PatternLayout pattern="%d{yyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>-->
-            <PatternLayout pattern="%d{yyy-MM-dd HH:mm:ss}|%-5level|%msg%n"/>
+        <RollingFile name="RollingFile">
+            <FileName>/mnt0/var/log/presto/presto_querylog.log</FileName>
+            <FilePattern>/mnt0/var/log/presto/presto_querylog-%d{yyyy-MM-dd-hh-mm-ss}.log</FilePattern>
+            <PatternLayout pattern="%d{yyy-MM-dd HH:mm:ss.SSS}|%msg%n"/>
             <Policies>
-                <SizeBasedTriggeringPolicy size="10 MB"/>
+                <SizeBasedTriggeringPolicy size="2 MB"/>
+                <CronTriggeringPolicy schedule="58 59 23 ? * * *"/>
             </Policies>
-            <DefaultRolloverStrategy max="10"/>
+            <DefaultRolloverStrategy max="20"/>
         </RollingFile>
     </Appenders>
 
     <Loggers>
         <Root level="INFO">
-            <AppenderRef ref="JsonRollingFile"/>
+            <AppenderRef ref="RollingFile"/>
         </Root>
     </Loggers>
 </Configuration>
