@@ -50,23 +50,23 @@ Prepare configuration file for logging query events, e.g. `<path_to_presto>/etc/
 
 ```
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="PrestoQueryLog" packages="">
+<Configuration status="info" name="PrestoQueryLog" packages="">
     <Appenders>
-        <RollingFile name="JsonRollingFile">
-            <FileName>/var/log/presto/presto-querylog.log</FileName>
-            <FilePattern>/var/log/presto/%d{yyyy-MM-dd-hh}-%i.log</FilePattern>
-            <JsonLayout charset="UTF-8" includeStacktrace="false"
-                        compact="true" eventEol="true" objectMessageAsJsonObject="true"/>
+        <RollingFile name="RollingFile">
+            <FileName>/mnt0/var/log/presto/presto_querylog.log</FileName>
+            <FilePattern>/mnt0/var/log/presto/presto_querylog-%d{yyyy-MM-dd-hh-mm-ss}.log</FilePattern>
+            <PatternLayout pattern="%d{yyy-MM-dd HH:mm:ss.SSS}|%msg%n"/>
             <Policies>
-                <SizeBasedTriggeringPolicy size="10 MB"/>
+                <SizeBasedTriggeringPolicy size="2 MB"/>
+                <CronTriggeringPolicy schedule="58 59 23 ? * * *"/>
             </Policies>
-            <DefaultRolloverStrategy max="10"/>
+            <DefaultRolloverStrategy max="20"/>
         </RollingFile>
     </Appenders>
 
     <Loggers>
         <Root level="INFO">
-            <AppenderRef ref="JsonRollingFile"/>
+            <AppenderRef ref="RollingFile"/>
         </Root>
     </Loggers>
 </Configuration>
