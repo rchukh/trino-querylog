@@ -48,7 +48,7 @@ public class QueryLogListenerTest {
 
             // Then two events should be present in the log file
             long logEventsCount = Files.lines(Paths.get("target/queryCreatedEvents.log")).count();
-            assertEquals(logEventsCount, 2);
+            assertEquals(2, logEventsCount);
         } finally {
             Configurator.shutdown(loggerContext);
         }
@@ -75,7 +75,7 @@ public class QueryLogListenerTest {
 
             // Then only created event should be present in the log file
             long logEventsCount = Files.lines(Paths.get("target/onlyQueryCreatedEvents.log")).count();
-            assertEquals(logEventsCount, 1);
+            assertEquals(1, logEventsCount);
         } finally {
             Configurator.shutdown(loggerContext);
         }
