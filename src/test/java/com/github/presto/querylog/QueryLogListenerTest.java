@@ -1,10 +1,12 @@
 package com.github.presto.querylog;
 
-import com.facebook.presto.spi.eventlistener.QueryContext;
-import com.facebook.presto.spi.eventlistener.QueryCreatedEvent;
-import com.facebook.presto.spi.eventlistener.QueryMetadata;
-import com.facebook.presto.spi.eventlistener.SplitCompletedEvent;
-import com.facebook.presto.spi.eventlistener.SplitStatistics;
+import io.airlift.units.DataSize;
+import io.prestosql.spi.eventlistener.QueryContext;
+import io.prestosql.spi.eventlistener.QueryCreatedEvent;
+import io.prestosql.spi.eventlistener.QueryMetadata;
+import io.prestosql.spi.eventlistener.SplitCompletedEvent;
+import io.prestosql.spi.eventlistener.SplitStatistics;
+import io.prestosql.spi.session.ResourceEstimates;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.junit.jupiter.api.Test;
@@ -46,7 +48,7 @@ public class QueryLogListenerTest {
 
             // Then two events should be present in the log file
             long logEventsCount = Files.lines(Paths.get("target/queryCreatedEvents.log")).count();
-            assertEquals(logEventsCount, 2);
+            assertEquals(2, logEventsCount);
         } finally {
             Configurator.shutdown(loggerContext);
         }
@@ -73,7 +75,7 @@ public class QueryLogListenerTest {
 
             // Then only created event should be present in the log file
             long logEventsCount = Files.lines(Paths.get("target/onlyQueryCreatedEvents.log")).count();
-            assertEquals(logEventsCount, 1);
+            assertEquals(1, logEventsCount);
         } finally {
             Configurator.shutdown(loggerContext);
         }
@@ -107,7 +109,6 @@ public class QueryLogListenerTest {
                 ofMillis(2000),
                 ofMillis(3000),
                 ofMillis(4000),
-                ofMillis(5000),
                 1,
                 2,
                 Optional.of(Duration.ofMillis(100)),
@@ -117,7 +118,10 @@ public class QueryLogListenerTest {
 
     private QueryMetadata prepareQueryMetadata() {
         return new QueryMetadata(
-                "queryId", Optional.empty(), "query", "queryState",
+                "queryId", Optional.empty(),
+                "query",
+                Optional.of("preparedQuery"),
+                "queryState",
                 URI.create("http://localhost"),
                 Optional.empty(), Optional.empty()
         );
@@ -128,8 +132,9 @@ public class QueryLogListenerTest {
                 "user",
                 Optional.of("principal"),
                 Optional.empty(), Optional.empty(), Optional.empty(),
-                new HashSet<>(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
-                new HashMap<>(),
+                Optional.empty(), new HashSet<String>(), new HashSet<String>(), Optional.empty(), Optional.empty(),
+                Optional.empty(),Optional.empty(),new HashMap<>(),
+                new ResourceEstimates(Optional.empty(), Optional.empty(), Optional.of(DataSize.succinctDataSize(1000, DataSize.Unit.BYTE))),
                 "serverAddress", "serverVersion", "environment"
         );
     }

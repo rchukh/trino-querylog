@@ -13,10 +13,10 @@
  */
 package com.github.presto.querylog;
 
-import com.facebook.presto.spi.eventlistener.EventListener;
-import com.facebook.presto.spi.eventlistener.QueryCompletedEvent;
-import com.facebook.presto.spi.eventlistener.QueryCreatedEvent;
-import com.facebook.presto.spi.eventlistener.SplitCompletedEvent;
+import io.prestosql.spi.eventlistener.EventListener;
+import io.prestosql.spi.eventlistener.QueryCompletedEvent;
+import io.prestosql.spi.eventlistener.QueryCreatedEvent;
+import io.prestosql.spi.eventlistener.SplitCompletedEvent;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.message.ObjectMessage;

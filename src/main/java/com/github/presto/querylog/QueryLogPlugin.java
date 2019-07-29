@@ -13,8 +13,8 @@
  */
 package com.github.presto.querylog;
 
-import com.facebook.presto.spi.Plugin;
-import com.facebook.presto.spi.eventlistener.EventListenerFactory;
+import io.prestosql.spi.Plugin;
+import io.prestosql.spi.eventlistener.EventListenerFactory;
 
 import java.util.Collections;
 
