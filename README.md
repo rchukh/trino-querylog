@@ -1,4 +1,6 @@
 [![Build Status](https://travis-ci.org/rchukh/presto-querylog.svg?branch=master)](https://travis-ci.org/rchukh/presto-querylog)
+[![](https://jitpack.io/v/rchukh/presto-querylog.svg)](https://jitpack.io/#rchukh/presto-querylog)
+
 
 # Overview
 
