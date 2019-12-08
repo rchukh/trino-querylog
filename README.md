@@ -4,7 +4,7 @@
 
 # Overview
 
-Presto QueryLog is a Presto plugin for logging query events into separate log file.
+Presto QueryLog is a [PrestoSQL](https://prestosql.io/) plugin for logging query events into separate log file.
 
 Its main purpose is to gather queries metadata and statistics as one event per line, so it can be easily collected by external software (e.g. Elastic FileBeat which will send data to Logstash/ElasticSearch/Kibana for storage/analysis).
 
