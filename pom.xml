@@ -13,10 +13,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>11</maven.compiler.release>
         <log4j2.version>2.12.1</log4j2.version>
-        <presto-spi.version>316</presto-spi.version>
-        <!--NOTE: PrestoSQL 316 uses 2.9.8-->
-        <!--This dependency comes from io.airlift:airbase 91-->
-        <jackson.version>2.9.8</jackson.version>
+        <presto-spi.version>326</presto-spi.version>
+        <!--NOTE: PrestoSQL 326 uses Jackson 2.10.0-->
+        <!--This dependency comes from io.airlift:airbase 93-->
+        <jackson.version>2.10.0</jackson.version>
         <!-- Test -->
         <junit.jupiter.version>5.5.2</junit.jupiter.version>
     </properties>

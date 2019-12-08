@@ -1,6 +1,5 @@
 package com.github.presto.querylog;
 
-import io.airlift.units.DataSize;
 import io.prestosql.spi.eventlistener.QueryContext;
 import io.prestosql.spi.eventlistener.QueryCreatedEvent;
 import io.prestosql.spi.eventlistener.QueryMetadata;
@@ -132,9 +131,9 @@ public class QueryLogListenerTest {
                 "user",
                 Optional.of("principal"),
                 Optional.empty(), Optional.empty(), Optional.empty(),
-                Optional.empty(), new HashSet<String>(), new HashSet<String>(), Optional.empty(), Optional.empty(),
-                Optional.empty(),Optional.empty(),new HashMap<>(),
-                new ResourceEstimates(Optional.empty(), Optional.empty(), Optional.of(DataSize.succinctDataSize(1000, DataSize.Unit.BYTE))),
+                Optional.empty(), new HashSet<>(), new HashSet<>(), Optional.empty(), Optional.empty(),
+                Optional.empty(), Optional.empty(), new HashMap<>(),
+                new ResourceEstimates(Optional.empty(), Optional.empty(), Optional.of(1000L)),
                 "serverAddress", "serverVersion", "environment"
         );
     }
