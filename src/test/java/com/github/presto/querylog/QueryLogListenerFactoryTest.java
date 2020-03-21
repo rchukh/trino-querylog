@@ -10,7 +10,7 @@ public class QueryLogListenerFactoryTest {
     @Test
     public void getName() {
         QueryLogListenerFactory listenerFactory = new QueryLogListenerFactory();
-        assertEquals("presto-querylog", listenerFactory.getName());
+        assertEquals("presto-querylog2", listenerFactory.getName());
     }
 
 //    @Test
