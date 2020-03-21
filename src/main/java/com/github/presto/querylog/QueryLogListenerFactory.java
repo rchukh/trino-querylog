@@ -23,16 +23,16 @@ import java.util.Map;
 import static java.util.Objects.requireNonNull;
 
 public class QueryLogListenerFactory implements EventListenerFactory {
-    private static final String QUERYLOG_CONFIG_LOCATION = "presto.querylog.log4j2.configLocation";
-    private static final String QUERYLOG_TRACK_CREATED = "presto.querylog.log.queryCreatedEvent";
-    private static final String QUERYLOG_TRACK_COMPLETED = "presto.querylog.log.queryCompletedEvent";
-    private static final String QUERYLOG_TRACK_COMPLETED_SPLIT = "presto.querylog.log.splitCompletedEvent";
+    public static final String QUERYLOG_CONFIG_LOCATION = "presto.querylog.log4j2.configLocation";
+    public static final String QUERYLOG_TRACK_CREATED = "presto.querylog.log.queryCreatedEvent";
+    public static final String QUERYLOG_TRACK_COMPLETED = "presto.querylog.log.queryCompletedEvent";
+    public static final String QUERYLOG_TRACK_COMPLETED_SPLIT = "presto.querylog.log.splitCompletedEvent";
 
     private static final String QUERYLOG_CONFIG_LOCATION_ERROR = QUERYLOG_CONFIG_LOCATION + " is null";
 
     @Override
     public String getName() {
-        return "presto-querylog2";
+        return "presto-querylog";
     }
 
     @Override

@@ -6,25 +6,25 @@ name: Unit Tests
 on: [pull_request]
 
 jobs:
-#  build:
-#    runs-on: ubuntu-latest
-#    strategy:
-#      matrix:
-#        java: [ 11, 14 ]
-#    steps:
-#    - uses: actions/checkout@v2
-#    - uses: actions/cache@v1
-#      with:
-#        path: ~/.m2/repository
-#        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-#        restore-keys: |
-#          ${{ runner.os }}-maven-
-#    - name: Set up JDK
-#      uses: actions/setup-java@v1
-#      with:
-#        java-version: ${{ matrix.java }}
-#    - name: Build with Maven
-#      run: mvn -B clean test --file pom.xml
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java: [ 11, 14 ]
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/cache@v1
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
+    - name: Set up JDK
+      uses: actions/setup-java@v1
+      with:
+        java-version: ${{ matrix.java }}
+    - name: Build with Maven
+      run: mvn -B clean test --file pom.xml
   sonar:
     runs-on: ubuntu-latest
     steps:
@@ -44,7 +44,7 @@ jobs:
       - name: Build Project
         run: mvn -B clean verify --file pom.xml
       - name: Analyze with SonarCloud
-        run: mvn -X -B sonar:sonar -Dsonar.projectKey=com.github.rchukh:presto-querylog -Dsonar.organization=rchukh-github -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_TOKEN --file pom.xml
+        run: mvn -B sonar:sonar -Dsonar.projectKey=com.github.rchukh:presto-querylog -Dsonar.organization=rchukh-github -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_TOKEN --file pom.xml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

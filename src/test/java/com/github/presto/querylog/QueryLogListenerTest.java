@@ -30,11 +30,10 @@ public class QueryLogListenerTest {
 
     @Test
     public void queryCreatedEvents() throws IOException {
-        LoggerContext loggerContext = Configurator.initialize(
+        try (LoggerContext loggerContext = Configurator.initialize(
                 "queryCreatedEvents",
                 "classpath:queryCreatedEvents.xml"
-        );
-        try {
+        )) {
             // Given there is a listener for query created event
             QueryLogListener listener = new QueryLogListener(
                     loggerContext,
@@ -48,19 +47,16 @@ public class QueryLogListenerTest {
             // Then two events should be present in the log file
             long logEventsCount = Files.lines(Paths.get("target/queryCreatedEvents.log")).count();
             assertEquals(2, logEventsCount);
-        } finally {
-            Configurator.shutdown(loggerContext);
         }
     }
 
 
     @Test
     public void onlyQueryCreatedEvents() throws IOException {
-        LoggerContext loggerContext = Configurator.initialize(
+        try (LoggerContext loggerContext = Configurator.initialize(
                 "onlyQueryCreatedEvents",
                 "classpath:onlyQueryCreatedEvents.xml"
-        );
-        try {
+        )) {
             // Given there is a listener for query created event
             QueryLogListener listener = new QueryLogListener(
                     loggerContext,
@@ -75,8 +71,6 @@ public class QueryLogListenerTest {
             // Then only created event should be present in the log file
             long logEventsCount = Files.lines(Paths.get("target/onlyQueryCreatedEvents.log")).count();
             assertEquals(1, logEventsCount);
-        } finally {
-            Configurator.shutdown(loggerContext);
         }
     }
 
