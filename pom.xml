@@ -19,7 +19,6 @@
         <jackson.version>2.10.0</jackson.version>
         <!-- Test -->
         <junit.jupiter.version>5.6.0</junit.jupiter.version>
-        <testcontainers.version>1.13.0</testcontainers.version>
     </properties>
 
     <dependencies>
