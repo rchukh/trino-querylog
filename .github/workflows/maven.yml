@@ -3,7 +3,7 @@
 
 name: Unit Tests
 
-on: [push, pull_request]
+on: [pull_request]
 
 jobs:
   build:
@@ -23,6 +23,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - run: |
+          git fetch --prune --unshallow
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
