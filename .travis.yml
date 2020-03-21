@@ -1,9 +1,0 @@
-language: java
-jdk:
-  - openjdk11
-  - openjdk13
-addons:
-  sonarcloud:
-    organization: "rchukh-github"
-script:
-  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
