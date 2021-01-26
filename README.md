@@ -19,7 +19,7 @@ mvn clean package dependency:copy-dependencies -DincludeScope=runtime
 
 ### Copy artifacts
 
-Copy the following artifacts (after successful build) to the trino plugin folder (`<path_to_trino>/plugin/trino-querylog/`)
+Copy the following artifacts (after successful build) to the Trino plugin folder (`<path_to_trino>/plugin/trino-querylog/`)
 ```
 target/dependency/*.jar
 target/trino-querylog-*.jar

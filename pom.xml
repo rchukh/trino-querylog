@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.github.rchukh</groupId>
-    <artifactId>trino-querylog</artifactId>
+    <artifactId>presto-querylog</artifactId>
     <version>0.4.0-SNAPSHOT</version>
     <name>Trino Query Log</name>
 
