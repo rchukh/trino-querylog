@@ -4,7 +4,7 @@
 
 # Overview
 
-Presto QueryLog is a [PrestoSQL](https://prestosql.io/) plugin for logging query events into separate log file.
+Trino QueryLog is a [TrinoSQL](https://trino.io/) plugin for logging query events into separate log file.
 
 Its main purpose is to gather queries metadata and statistics as one event per line, so it can be easily collected by external software (e.g. Elastic FileBeat which will send data to Logstash/ElasticSearch/Kibana for storage/analysis).
 
@@ -19,44 +19,44 @@ mvn clean package dependency:copy-dependencies -DincludeScope=runtime
 
 ### Copy artifacts
 
-Copy the following artifacts (after successful build) to the Presto plugin folder (`<path_to_presto>/plugin/presto-querylog/`)
+Copy the following artifacts (after successful build) to the trino plugin folder (`<path_to_trino>/plugin/trino-querylog/`)
 ```
 target/dependency/*.jar
-target/presto-querylog-*.jar
+target/trino-querylog-*.jar
 ```
 
 ### Prepare configuration file
 
-Create `<path_to_presto>/etc/event-listener.properties` with the following required parameters, e.g.:
+Create `<path_to_trino>/etc/event-listener.properties` with the following required parameters, e.g.:
 
 ```
-event-listener.name=presto-querylog
-presto.querylog.log4j2.configLocation=<path_to_presto>/etc/querylog-log4j2.xml
+event-listener.name=trino-querylog
+trino.querylog.log4j2.configLocation=<path_to_trino>/etc/querylog-log4j2.xml
 ```
 
 #### Optional Parameters
 
-| Configuration                             | Default  | Description                | 
-| ----------------------------------------- | -------- | -------------------------- |
-| `presto.querylog.log.queryCreatedEvent`   | **true** | Log Query Create event.    |
-| `presto.querylog.log.queryCompletedEvent` | **true** | Log Query Completed event. |
-| `presto.querylog.log.splitCompletedEvent` | **true** | Log Split Completed event. |
+| Configuration                            | Default  | Description                |
+| ---------------------------------------- | -------- | -------------------------- |
+| `trino.querylog.log.queryCreatedEvent`   | **true** | Log Query Create event.    |
+| `trino.querylog.log.queryCompletedEvent` | **true** | Log Query Completed event. |
+| `trino.querylog.log.splitCompletedEvent` | **true** | Log Split Completed event. |
 
-* `presto.querylog.log.queryCompletedEvent` can be used for post-hoc analysis of completed queries, as it contains all of the statistics of the query.
-* `presto.querylog.log.splitCompletedEvent` can be used to track query progress.
-* `presto.querylog.log.queryCreatedEvent` can be used to track long-running queries that are stuck without progress. 
+* `trino.querylog.log.queryCompletedEvent` can be used for post-hoc analysis of completed queries, as it contains all of the statistics of the query.
+* `trino.querylog.log.splitCompletedEvent` can be used to track query progress.
+* `trino.querylog.log.queryCreatedEvent` can be used to track long-running queries that are stuck without progress. 
 
 ### Create log4j2 configuration file
 
-Prepare configuration file for logging query events, e.g. `<path_to_presto>/etc/querylog-log4j2.xml`
+Prepare configuration file for logging query events, e.g. `<path_to_trino>/etc/querylog-log4j2.xml`
 
 ```
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="PrestoQueryLog" packages="">
+<Configuration status="warn" name="TrinoQueryLog" packages="">
     <Appenders>
         <RollingFile name="JsonRollingFile">
-            <FileName>/var/log/presto/presto-querylog.log</FileName>
-            <FilePattern>/var/log/presto/%d{yyyy-MM-dd-hh}-%i.log</FilePattern>
+            <FileName>/var/log/trino/trino-querylog.log</FileName>
+            <FilePattern>/var/log/trino/%d{yyyy-MM-dd-hh}-%i.log</FilePattern>
             <JsonLayout charset="UTF-8" includeStacktrace="false"
                         compact="true" eventEol="true" objectMessageAsJsonObject="true"/>
             <Policies>
