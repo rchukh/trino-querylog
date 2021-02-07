@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/rchukh/presto-querylog.svg?branch=master)](https://travis-ci.org/rchukh/presto-querylog)
-[![](https://jitpack.io/v/rchukh/presto-querylog.svg)](https://jitpack.io/#rchukh/presto-querylog)
+[![Build Status](https://github.com/rchukh/trino-querylog/workflows/Unit%20Tests/badge.svg?branch=master)](https://github.com/rchukh/trino-querylog/workflows/Unit%20Tests/badge.svg?branch=master)
+[![](https://jitpack.io/v/rchukh/trino-querylog.svg)](https://jitpack.io/#rchukh/trino-querylog)
 
 
 # Overview

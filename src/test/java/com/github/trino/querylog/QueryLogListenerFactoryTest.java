@@ -8,16 +8,16 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class QueryLogListenerFactoryTest {
+class QueryLogListenerFactoryTest {
 
     @Test
-    public void getName() {
+    void getName() {
         QueryLogListenerFactory listenerFactory = new QueryLogListenerFactory();
         assertEquals("trino-querylog", listenerFactory.getName());
     }
 
     @Test
-    public void createWithoutConfigShouldThrowException() {
+    void createWithoutConfigShouldThrowException() {
         // Given
         Map<String, String> configs = new HashMap<>();
         configs.put(QueryLogListenerFactory.QUERYLOG_CONFIG_LOCATION, null);

@@ -5,25 +5,24 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.github.rchukh</groupId>
-    <artifactId>presto-querylog</artifactId>
+    <artifactId>trino-querylog</artifactId>
     <version>0.4.0-SNAPSHOT</version>
     <name>Trino Query Log</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>11</maven.compiler.release>
-        <log4j2.version>2.13.1</log4j2.version>
+        <log4j2.version>2.14.0</log4j2.version>
         <trino-spi.version>351</trino-spi.version>
-        <!--NOTE: PrestoSQL 331 uses Jackson 2.10.0-->
-        <!--This dependency comes from io.airlift:airbase 97-->
-        <jackson.version>2.10.0</jackson.version>
+        <!--NOTE: Trino 351 uses Jackson 2.10.5-->
+        <jackson.version>2.10.5</jackson.version>
         <!-- Test -->
-        <junit.jupiter.version>5.6.0</junit.jupiter.version>
+        <junit.jupiter.version>5.7.1</junit.jupiter.version>
         <sonar.coverage.jacoco.xmlReportPaths>${project.build.directory}/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 
     <dependencies>
-        <!-- Presto Dependencies (should be presented on the server) -->
+        <!-- Trino Dependencies (should be presented on the server) -->
         <dependency>
             <groupId>io.trino</groupId>
             <artifactId>trino-spi</artifactId>
@@ -37,7 +36,7 @@
             <artifactId>log4j-core</artifactId>
             <version>${log4j2.version}</version>
         </dependency>
-        <!-- Although Jackson is used by plugin, it is better to align the version with the one used in Presto  -->
+        <!-- Although Jackson is used by plugin, it is better to align the version with the one used in Trino  -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
@@ -95,7 +94,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>3.2.0</version>
+                <version>3.2.1</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -124,7 +123,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.2.0</version>
+                <version>3.3.0</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -142,7 +141,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.5</version>
+                <version>0.8.6</version>
                 <executions>
                     <execution>
                         <id>prepare-agent</id>

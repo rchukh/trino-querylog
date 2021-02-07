@@ -30,10 +30,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 // Those are just a few very crude tests.
 // TODO: Add more cases with proper structure.
 // TODO: Test actual JSON output, not just its presence.
-public class QueryLogListenerTest {
+class QueryLogListenerTest {
 
     @Test
-    public void queryCreatedEvents() throws IOException {
+    void queryCreatedEvents() throws IOException {
         try (LoggerContext loggerContext = Configurator.initialize(
                 "queryCreatedEvents",
                 "classpath:queryCreatedEvents.xml"
@@ -56,7 +56,7 @@ public class QueryLogListenerTest {
 
 
     @Test
-    public void onlyQueryCreatedEvents() throws IOException {
+    void onlyQueryCreatedEvents() throws IOException {
         try (LoggerContext loggerContext = Configurator.initialize(
                 "onlyQueryCreatedEvents",
                 "classpath:onlyQueryCreatedEvents.xml"
