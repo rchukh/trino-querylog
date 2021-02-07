@@ -12,7 +12,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>11</maven.compiler.release>
-        <log4j2.version>2.13.1</log4j2.version>
+        <log4j2.version>2.13.2</log4j2.version>
         <trino-spi.version>351</trino-spi.version>
         <!--NOTE: PrestoSQL 331 uses Jackson 2.10.0-->
         <!--This dependency comes from io.airlift:airbase 97-->
