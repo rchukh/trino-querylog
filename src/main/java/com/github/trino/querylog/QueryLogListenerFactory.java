@@ -11,10 +11,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.presto.querylog;
+package com.github.trino.querylog;
 
-import io.prestosql.spi.eventlistener.EventListener;
-import io.prestosql.spi.eventlistener.EventListenerFactory;
+import io.trino.spi.eventlistener.EventListener;
+import io.trino.spi.eventlistener.EventListenerFactory;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
 
@@ -23,22 +23,22 @@ import java.util.Map;
 import static java.util.Objects.requireNonNull;
 
 public class QueryLogListenerFactory implements EventListenerFactory {
-    public static final String QUERYLOG_CONFIG_LOCATION = "presto.querylog.log4j2.configLocation";
-    public static final String QUERYLOG_TRACK_CREATED = "presto.querylog.log.queryCreatedEvent";
-    public static final String QUERYLOG_TRACK_COMPLETED = "presto.querylog.log.queryCompletedEvent";
-    public static final String QUERYLOG_TRACK_COMPLETED_SPLIT = "presto.querylog.log.splitCompletedEvent";
+    public static final String QUERYLOG_CONFIG_LOCATION = "trino.querylog.log4j2.configLocation";
+    public static final String QUERYLOG_TRACK_CREATED = "trino.querylog.log.queryCreatedEvent";
+    public static final String QUERYLOG_TRACK_COMPLETED = "trino.querylog.log.queryCompletedEvent";
+    public static final String QUERYLOG_TRACK_COMPLETED_SPLIT = "trino.querylog.log.splitCompletedEvent";
 
     private static final String QUERYLOG_CONFIG_LOCATION_ERROR = QUERYLOG_CONFIG_LOCATION + " is null";
 
     @Override
     public String getName() {
-        return "presto-querylog";
+        return "trino-querylog";
     }
 
     @Override
     public EventListener create(Map<String, String> map) {
         String log4j2ConfigLocation = requireNonNull(map.get(QUERYLOG_CONFIG_LOCATION), QUERYLOG_CONFIG_LOCATION_ERROR);
-        LoggerContext loggerContext = Configurator.initialize("presto-querylog", log4j2ConfigLocation);
+        LoggerContext loggerContext = Configurator.initialize("trino-querylog", log4j2ConfigLocation);
         boolean trackEventCreated = getBooleanConfig(map, QUERYLOG_TRACK_CREATED, true);
         boolean trackEventCompleted = getBooleanConfig(map, QUERYLOG_TRACK_COMPLETED, true);
         boolean trackEventCompletedSplit = getBooleanConfig(map, QUERYLOG_TRACK_COMPLETED_SPLIT, true);

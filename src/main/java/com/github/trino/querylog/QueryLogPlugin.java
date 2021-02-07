@@ -11,10 +11,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.presto.querylog;
+package com.github.trino.querylog;
 
-import io.prestosql.spi.Plugin;
-import io.prestosql.spi.eventlistener.EventListenerFactory;
+import io.trino.spi.Plugin;
+import io.trino.spi.eventlistener.EventListenerFactory;
 
 import java.util.Collections;
 

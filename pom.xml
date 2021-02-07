@@ -7,13 +7,13 @@
     <groupId>com.github.rchukh</groupId>
     <artifactId>presto-querylog</artifactId>
     <version>0.4.0-SNAPSHOT</version>
-    <name>Presto Query Log</name>
+    <name>Trino Query Log</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>11</maven.compiler.release>
         <log4j2.version>2.13.1</log4j2.version>
-        <presto-spi.version>331</presto-spi.version>
+        <trino-spi.version>351</trino-spi.version>
         <!--NOTE: PrestoSQL 331 uses Jackson 2.10.0-->
         <!--This dependency comes from io.airlift:airbase 97-->
         <jackson.version>2.10.0</jackson.version>
@@ -25,9 +25,9 @@
     <dependencies>
         <!-- Presto Dependencies (should be presented on the server) -->
         <dependency>
-            <groupId>io.prestosql</groupId>
-            <artifactId>presto-spi</artifactId>
-            <version>${presto-spi.version}</version>
+            <groupId>io.trino</groupId>
+            <artifactId>trino-spi</artifactId>
+            <version>${trino-spi.version}</version>
             <scope>provided</scope>
         </dependency>
 

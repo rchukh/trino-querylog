@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="PrestoQueryLog" packages="">
+<Configuration status="warn" name="TrinoQueryLog" packages="">
     <Appenders>
         <RollingFile name="JsonRollingFile" append="false">
             <FileName>target/onlyQueryCreatedEvents.log</FileName>

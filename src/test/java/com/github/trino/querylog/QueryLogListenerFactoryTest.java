@@ -1,4 +1,4 @@
-package com.github.presto.querylog;
+package com.github.trino.querylog;
 
 import org.junit.jupiter.api.Test;
 
@@ -13,7 +13,7 @@ public class QueryLogListenerFactoryTest {
     @Test
     public void getName() {
         QueryLogListenerFactory listenerFactory = new QueryLogListenerFactory();
-        assertEquals("presto-querylog", listenerFactory.getName());
+        assertEquals("trino-querylog", listenerFactory.getName());
     }
 
     @Test
