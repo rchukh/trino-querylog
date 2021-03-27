@@ -13,21 +13,25 @@
  */
 package com.github.trino.querylog;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import io.trino.spi.eventlistener.EventListener;
 import io.trino.spi.eventlistener.QueryCompletedEvent;
 import io.trino.spi.eventlistener.QueryCreatedEvent;
 import io.trino.spi.eventlistener.SplitCompletedEvent;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.message.ObjectMessage;
 
 public class QueryLogListener implements EventListener {
     private final Logger logger;
+    private final ObjectWriter writer;
     private final boolean trackEventCreated;
     private final boolean trackEventCompleted;
     private final boolean trackEventCompletedSplit;
 
     public QueryLogListener(final LoggerContext loggerContext,
+                            final ObjectMapper mapper,
                             final boolean trackEventCreated,
                             final boolean trackEventCompleted,
                             final boolean trackEventCompletedSplit) {
@@ -35,26 +39,39 @@ public class QueryLogListener implements EventListener {
         this.trackEventCompleted = trackEventCompleted;
         this.trackEventCompletedSplit = trackEventCompletedSplit;
         this.logger = loggerContext.getLogger(QueryLogListener.class.getName());
+        this.writer = mapper.writer();
     }
 
     @Override
     public void queryCreated(final QueryCreatedEvent queryCreatedEvent) {
         if (trackEventCreated) {
-            logger.info(new ObjectMessage(queryCreatedEvent));
+            try {
+                logger.info(writer.writeValueAsString(queryCreatedEvent));
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
     @Override
     public void queryCompleted(final QueryCompletedEvent queryCompletedEvent) {
         if (trackEventCompleted) {
-            logger.info(new ObjectMessage(queryCompletedEvent));
+            try {
+                logger.info(writer.writeValueAsString(queryCompletedEvent));
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
     @Override
     public void splitCompleted(final SplitCompletedEvent splitCompletedEvent) {
         if (trackEventCompletedSplit) {
-            logger.info(new ObjectMessage(splitCompletedEvent));
+            try {
+                logger.info(writer.writeValueAsString(splitCompletedEvent));
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }

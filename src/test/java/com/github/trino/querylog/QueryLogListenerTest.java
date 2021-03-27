@@ -1,5 +1,10 @@
 package com.github.trino.querylog;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.trino.spi.eventlistener.QueryContext;
 import io.trino.spi.eventlistener.QueryCreatedEvent;
 import io.trino.spi.eventlistener.QueryMetadata;
@@ -25,12 +30,20 @@ import java.util.Optional;
 import java.util.Set;
 
 import static java.time.Duration.ofMillis;
+import static java.time.Duration.ofNanos;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 // Those are just a few very crude tests.
 // TODO: Add more cases with proper structure.
 // TODO: Test actual JSON output, not just its presence.
 class QueryLogListenerTest {
+    private final ObjectMapper mapper = new ObjectMapper()
+            .registerModule(new Jdk8Module())
+            .registerModule(new JavaTimeModule())
+            .configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false)
+            .setSerializationInclusion(JsonInclude.Include.NON_NULL)
+            .setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
+            .setSerializationInclusion(JsonInclude.Include.NON_ABSENT);
 
     @Test
     void queryCreatedEvents() throws IOException {
@@ -41,7 +54,7 @@ class QueryLogListenerTest {
             // Given there is a listener for query created event
             QueryLogListener listener = new QueryLogListener(
                     loggerContext,
-                    true, true, true
+                    mapper, true, true, true
             );
 
             // When two events are created
@@ -54,7 +67,6 @@ class QueryLogListenerTest {
         }
     }
 
-
     @Test
     void onlyQueryCreatedEvents() throws IOException {
         try (LoggerContext loggerContext = Configurator.initialize(
@@ -64,7 +76,7 @@ class QueryLogListenerTest {
             // Given there is a listener for query created event
             QueryLogListener listener = new QueryLogListener(
                     loggerContext,
-                    true, false, false
+                    mapper, true, false, false
             );
 
             // When one created event is created
@@ -74,6 +86,27 @@ class QueryLogListenerTest {
 
             // Then only created event should be present in the log file
             long logEventsCount = Files.lines(Paths.get("target/onlyQueryCreatedEvents.log")).count();
+            assertEquals(1, logEventsCount);
+        }
+    }
+
+    @Test
+    void splitCompletedEvents() throws IOException {
+        try (LoggerContext loggerContext = Configurator.initialize(
+                "splitCompletedEvents",
+                "classpath:common.xml"
+        )) {
+            // Given there is a listener for query created event
+            QueryLogListener listener = new QueryLogListener(
+                    loggerContext,
+                    mapper, true, true, true
+            );
+
+            // When split event is created
+            listener.splitCompleted(prepareSplitCompletedEvent());
+
+            // Then one event should be present in the log file
+            long logEventsCount = Files.lines(Paths.get("target/common.log.json")).count();
             assertEquals(1, logEventsCount);
         }
     }
@@ -103,8 +136,8 @@ class QueryLogListenerTest {
 
     private SplitStatistics getSplitStatistics() {
         return new SplitStatistics(
-                ofMillis(1000),
-                ofMillis(2000),
+                ofMillis(1),
+                ofNanos(2),
                 ofMillis(3000),
                 ofMillis(4000),
                 1,
