@@ -13,6 +13,11 @@
  */
 package com.github.trino.querylog;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.trino.spi.eventlistener.EventListener;
 import io.trino.spi.eventlistener.EventListenerFactory;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -42,7 +47,16 @@ public class QueryLogListenerFactory implements EventListenerFactory {
         boolean trackEventCreated = getBooleanConfig(map, QUERYLOG_TRACK_CREATED, true);
         boolean trackEventCompleted = getBooleanConfig(map, QUERYLOG_TRACK_COMPLETED, true);
         boolean trackEventCompletedSplit = getBooleanConfig(map, QUERYLOG_TRACK_COMPLETED_SPLIT, true);
-        return new QueryLogListener(loggerContext, trackEventCreated, trackEventCompleted, trackEventCompletedSplit);
+        ObjectMapper mapper = new ObjectMapper()
+                .registerModule(new Jdk8Module())
+                .registerModule(new JavaTimeModule())
+                // TODO: This should be a part of the plugin configuration
+                .configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false)
+                .setSerializationInclusion(JsonInclude.Include.NON_NULL)
+                .setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
+                .setSerializationInclusion(JsonInclude.Include.NON_ABSENT);
+
+        return new QueryLogListener(loggerContext, mapper, trackEventCreated, trackEventCompleted, trackEventCompletedSplit);
     }
 
     /**
