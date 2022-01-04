@@ -12,7 +12,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>11</maven.compiler.release>
-        <log4j2.version>2.14.0</log4j2.version>
+        <log4j2.version>2.17.1</log4j2.version>
         <trino-spi.version>351</trino-spi.version>
         <!--NOTE: Trino 351 uses Jackson 2.10.5-->
         <jackson.version>2.10.5</jackson.version>
