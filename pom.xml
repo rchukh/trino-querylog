@@ -15,7 +15,7 @@
         <log4j2.version>2.14.0</log4j2.version>
         <trino-spi.version>351</trino-spi.version>
         <!--NOTE: Trino 351 uses Jackson 2.10.5-->
-        <jackson.version>2.10.5</jackson.version>
+        <jackson.version>2.12.7.1</jackson.version>
         <!-- Test -->
         <junit.jupiter.version>5.7.1</junit.jupiter.version>
         <sonar.coverage.jacoco.xmlReportPaths>${project.build.directory}/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
